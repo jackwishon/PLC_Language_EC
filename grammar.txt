@@ -1,5 +1,14 @@
-expr   : term((PLUS|MINUS) term)*
+expr   : KEYWORD:VAR IDENTIFIER EQ expr
+       : term((PLUS|MINUS) term)*
+
 term   : factor((MULT|DIV) factor)*
+
 factor : INT|FLOAT
        : (PLUS|MINUS) factor
+       : power
+       : LPAREN expr RPAREN
+
+power  : atom(POW factor)*
+
+atom   : INT | FLOAT | IDENTIFIER 
        : LPAREN expr RPAREN
