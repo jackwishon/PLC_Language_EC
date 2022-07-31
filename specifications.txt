@@ -1,0 +1,151 @@
+***RUNNING PROGRAM***
+python3 shell.py
+
+****SIMPLE OPERATION***
+(10 + 2) * 4 => outputs 48
+
+***VARIABLE DECLARATION
+VAR a = 5 => sets a = 5
+a * 10 => outputs 50
+
+***COMPARISONS***
+10 < 12 => outputs 1 for true
+10 > 12 => outputs 0 for false
+
+***FUNCTION SYNTAX***
+FUN add (a,b) -> a + b => declares function that adds a + b
+add(5,6) => returns 11
+
+***IF STATEMENT EX***
+IF 25 == 25 THEN 2335 => returns 2335, if condition is not met returns false
+
+***FOR LOOP EX***
+VAR result = 1
+FOR i = 5 TO 0 STEP -1 THEN VAR result = result * i
+#loop returns [5, 20, 50, 120]
+#calling result returns 120
+
+***STRINGS***
+"string example"
+#returns echo
+"string " + "example"
+#returns "string example"
+"string " * 3
+#returns "string string string"
+
+FUN greet(person, wave) -> "hello " * wave + person
+greet("Dr. Umoja", 1)
+#returns "hello Dr. Umoja"
+
+***LISTS***
+[] => creates empty list
+[1,2,3] + 4 => returns [1,2,3,4]
+[1,2,3] * [3,4,5] => returns [1,2,3,4,5]
+[1,2,3]/0 => returns the 0th element
+
+KEYWORD LIST
+'VAR',
+'AND',
+'OR',
+'NOT',
+'IF',
+'ELIF',
+'ELSE',
+'FOR',
+'TO',
+'STEP',
+'WHILE',
+'FUN',
+'THEN',
+'END',
+'RETURN',
+'CONTINUE',
+'BREAK'
+
+TOKENS
+TT_INT				
+TT_FLOAT    	
+TT_STRING			
+TT_IDENTIFIER	
+TT_KEYWORD		
+TT_PLUS             +
+TT_MINUS            -   	
+TT_MUL              *   	
+TT_DIV              /    	
+TT_POW		        ^
+TT_EQ	            =				
+TT_LPAREN           (
+TT_RPAREN   	    )   
+TT_LSQUARE          [
+TT_RSQUARE          ]
+TT_EE			    =		
+TT_NE		        !			
+TT_LT				<
+TT_GT				>
+TT_LTE				<=
+TT_GTE				>=
+TT_COMMA		    ,
+TT_ARROW			->
+TT_NEWLINE		    \n
+TT_EOF				
+
+statement     : KEYWORD:RETRUN expr?
+              : KEYWORD:CONTINUE
+              : KEYWORD:BREAK
+              : expr
+
+statements    : NEWLINE* expr(NEWLINE+ expr)* NEWLINE*
+
+expr          : KEYWORD:VAR IDENTIFIER EQ expr
+              : comp-expr ((KEYWORD:AND | KEYWORD:OR) comp-expr)*
+              
+comp-expr     : NOT comp-expr
+              : arith-expr ((EE | LT | GT | LTE | GTE) arith-expr)*
+       
+arith-expr    : term((PLUS|MINUS) term)*
+
+term          : factor((MUL|DIV) factor)*
+
+factor        : (PLUS|MINUS) factor
+              : power
+
+power         : atom(POW factor)*
+
+call          : atom (LPAREN (expr (COMMA expr)*)? RPAREN)?
+
+atom          : INT | FLOAT | IDENTIFIER | STRING
+              : LPAREN expr RPAREN
+              : if-expr
+              : for-expr
+              : while-expr
+              : func-def
+
+if-expr       : KEYWORD:IF expr KEYWORD:THEN 
+                (expr if-expr-b | if-expr-c?)
+                (NEWLINE statements KEYWORD:END if-expr-b | if-expr-c)
+              
+if-expr-b     : KEYWORD:ELIF expr KEYWORD:THEN 
+                (expr if-expr-b | if-expr-c?)
+                (NEWLINE statements KEYWORD:END if-expr-b | if-expr-c)
+
+if-expr-c     : KEYWORD:ELSE
+                expr
+                (NEWLINE statemebnts KEYWORD:END)
+                
+
+for-expr      : KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr
+                (KEYWORD:STEP expr)? KEYWORD:THEN 
+                expr
+                (NEWLINE statements KEYWORD:END)
+
+while-expr    : KEYWORD:WHILE expr KEYWORD:THEN 
+                expr
+                (NEWLINE statements KEYWORD:END)
+
+list-expr     : LSQUARE (expr (COMMA expr)*)? RSQUARE
+
+func-def      : KEYWORD:FUN IDENTIFIER?
+              LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
+              (ARROW expr)
+              |(NEWLINE statements KEYWORD:END)
+
